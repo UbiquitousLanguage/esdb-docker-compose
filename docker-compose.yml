@@ -29,7 +29,7 @@ services:
       test:
         [
           'CMD-SHELL',
-          'curl --fail --insecure https://node3.eventstore:2113/health/live || exit 1',
+          'curl --fail --insecure https://node1.eventstore:2113/health/live || exit 1',
         ]
       interval: 5s
       timeout: 5s
