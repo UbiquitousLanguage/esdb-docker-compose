@@ -15,7 +15,7 @@ services:
     volumes:
       - ./certs:/certs
   node1.eventstore: &template
-    image: eventstore/eventstore:${ESDB_VERSION:-latest}
+    image: eventstore/eventstore
     container_name: node1.eventstore
     env_file:
       - vars.env
