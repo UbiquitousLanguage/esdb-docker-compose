@@ -1,19 +1,19 @@
-# es-cluster-compose
-Docker Compose file for a secure 3 node Event Store DB cluster
+# ESDB Docker Compose
 
-#### Node1 :
-- External TCP Port: 1113
-- External HTTP Port: 1114
+Docker Compose file for a secure three-node EventStoreDB cluster.
 
-### Node2:
-- External TCP Port: 2113
-- External HTTP Port: 2114
+## Cluster node addresses
 
-### Node3:
-- External TCP Port: 3113
-- External HTTP Port: 3114
+All cluster nodes can be reached via TCP and HTTPS using `localhost` and the port value specified below:
+
+| Node | TCP port | HTTP port |
+| :--- | :------- | :-------- |
+| node1 | 1111 | 2111 |
+| node2 | 1112 | 2112 |
+| node3 | 1113 | 2113 |
 
 ## Usage
+
 ```
 docker-compose up
 ```

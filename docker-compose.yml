@@ -1,9 +1,9 @@
-version: '3.3'
+version: '3.5'
 
 services:
   setup:
-    image: arwinneil/es-gencert-cli
-    entrypoint: ash
+    image: eventstore/es-gencert-cli:1.0.2
+    entrypoint: bash
     command: >
       -c "mkdir -p ./certs && cd /certs
       && es-gencert-cli create-ca
@@ -14,8 +14,9 @@ services:
     container_name: setup
     volumes:
       - ./certs:/certs
+
   node1.eventstore: &template
-    image: eventstore/eventstore
+    image: eventstore/eventstore:20.6.1-buster-slim
     container_name: node1.eventstore
     env_file:
       - vars.env
@@ -25,6 +26,8 @@ services:
       - EVENTSTORE_GOSSIP_SEED=node2.eventstore:2113,node3.eventstore:2113
       - EVENTSTORE_CERTIFICATE_FILE=/certs/node1/node.crt
       - EVENTSTORE_CERTIFICATE_PRIVATE_KEY_FILE=/certs/node1/node.key
+      - EVENTSTORE_ADVERTISE_HTTP_PORT_TO_CLIENT_AS=2111
+      - EVENTSTORE_ADVERTISE_TCP_PORT_TO_CLIENT_AS=1111
     healthcheck:
       test:
         [
@@ -35,22 +38,25 @@ services:
       timeout: 5s
       retries: 24
     ports:
-      - 1113:1113
-      - 1114:2113
+      - 1111:1113
+      - 2111:2113
     volumes:
       - ./certs:/certs
     depends_on:
       - setup
     restart: always
+
   node2.eventstore:
     <<: *template
     container_name: node2.eventstore
     environment:
       - EVENTSTORE_EXT_HOST_ADVERTISE_AS=node2.eventstore
       - EVENTSTORE_INT_HOST_ADVERTISE_AS=node2.eventstore
-      - EVENTSTORE_GOSSIP_SEED=eventstore.node1:2113,node3.eventstore:2113
+      - EVENTSTORE_GOSSIP_SEED=node1.eventstore:2113,node3.eventstore:2113
       - EVENTSTORE_CERTIFICATE_FILE=/certs/node2/node.crt
       - EVENTSTORE_CERTIFICATE_PRIVATE_KEY_FILE=/certs/node2/node.key
+      - EVENTSTORE_ADVERTISE_HTTP_PORT_TO_CLIENT_AS=2112
+      - EVENTSTORE_ADVERTISE_TCP_PORT_TO_CLIENT_AS=1112
     healthcheck:
       test:
         [
@@ -61,17 +67,20 @@ services:
       timeout: 5s
       retries: 24
     ports:
-      - 2113:1113
-      - 2114:2113
+      - 1112:1113
+      - 2112:2113
+
   node3.eventstore:
     <<: *template
     container_name: node3.eventstore
     environment:
       - EVENTSTORE_EXT_HOST_ADVERTISE_AS=node3.eventstore
       - EVENTSTORE_INT_HOST_ADVERTISE_AS=node3.eventstore
-      - EVENTSTORE_GOSSIP_SEED=eventstore.node1:2113,node2.eventstore:2113
+      - EVENTSTORE_GOSSIP_SEED=node1.eventstore:2113,node2.eventstore:2113
       - EVENTSTORE_CERTIFICATE_FILE=/certs/node3/node.crt
       - EVENTSTORE_CERTIFICATE_PRIVATE_KEY_FILE=/certs/node3/node.key
+      - EVENTSTORE_ADVERTISE_HTTP_PORT_TO_CLIENT_AS=2113
+      - EVENTSTORE_ADVERTISE_TCP_PORT_TO_CLIENT_AS=1113
     healthcheck:
       test:
         [
@@ -82,5 +91,5 @@ services:
       timeout: 5s
       retries: 24
     ports:
-      - 3113:1113
-      - 3114:2113
+      - 1113:1113
+      - 2113:2113
