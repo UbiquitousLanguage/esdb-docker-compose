@@ -2,6 +2,8 @@
 
 Docker Compose file for a secure three-node EventStoreDB cluster.
 
+You need both `docker-compose.yml` and `vars.env` files.
+
 ## Cluster node addresses
 
 All cluster nodes can be reached via TCP and HTTPS using `localhost` and the port value specified below:
