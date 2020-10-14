@@ -1,0 +1,3 @@
+Files in this directory won't be committed, except this one.
+
+It is needed to prevent the permission denied error if Docker creates this directory when creating the volume.
