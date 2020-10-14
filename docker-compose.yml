@@ -4,6 +4,7 @@ services:
   setup:
     image: eventstore/es-gencert-cli:1.0.2
     entrypoint: bash
+    user: "1000:1000"
     command: >
       -c "mkdir -p ./certs && cd /certs
       && es-gencert-cli create-ca
